@@ -1,0 +1,24 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000"
+    environment:
+      - TZ=Europe/Copenhagen
+      - RETSINFORMATION_BASE_URL=${RETSINFORMATION_BASE_URL:-https://api.retsinformation.dk}
+    profiles:
+      - base-only
+
+  app-dev:
+    extends:
+      service: app
+    volumes:
+      - .:/app
+    profiles:
+      - dev
+
+  app-prod:
+    extends:
+      service: app
+    profiles:
+      - prod
