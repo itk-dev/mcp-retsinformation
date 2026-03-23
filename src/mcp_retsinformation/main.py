@@ -4,6 +4,6 @@ from .tools import search  # noqa: F401 — side-effect import registers tools o
 
 def main() -> None:
     try:
-            mcp.run(transport="streamable-http", host="0.0.0.0", port=8000)
+        mcp.run(transport="streamable-http", host="0.0.0.0", port=8000)
     except (KeyboardInterrupt, SystemExit):
         pass

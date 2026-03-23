@@ -9,8 +9,10 @@ from ..server import mcp
 async def search_lovgivning(
     search: str | None = None,
     limit: int = 10,
-) -> list[dict]:
+) -> dict:
     """Search Danish legislation (love, bekendtgørelser, lovbekendtgørelser, cirkulærer, vejledninger).
+
+    Returns an object with 'data' (list of results) and 'count' (total matches).
 
     Args:
         search: Free-text search query in Danish.
@@ -87,8 +89,10 @@ async def get_lovgivning_at_date(year: int, number: int, date: str) -> dict:
 
 
 @mcp.tool()
-async def get_lovgivning_amendments(year: int, number: int) -> list[dict]:
+async def get_lovgivning_amendments(year: int, number: int) -> dict:
     """List all amendments to a Danish law.
+
+    Returns an object with amendment data.
 
     Args:
         year: The year the law was passed.

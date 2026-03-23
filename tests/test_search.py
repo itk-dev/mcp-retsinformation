@@ -31,17 +31,17 @@ def mock_client(mocker, mock_json_response):
 # --- search_lovgivning ---
 
 async def test_search_lovgivning_with_query(mock_client, mock_json_response):
-    mock_json_response.json.return_value = [{"id": 1}, {"id": 2}]
+    mock_json_response.json.return_value = {"data": [{"id": 1}, {"id": 2}], "count": 2}
     result = await search_lovgivning(search="skat", limit=5)
     mock_client.get.assert_called_once_with("/v1/lovgivning/", params={"limit": 5, "search": "skat"})
-    assert result == [{"id": 1}, {"id": 2}]
+    assert result == {"data": [{"id": 1}, {"id": 2}], "count": 2}
 
 
 async def test_search_lovgivning_without_query(mock_client, mock_json_response):
-    mock_json_response.json.return_value = [{"id": 1}]
+    mock_json_response.json.return_value = {"data": [{"id": 1}], "count": 1}
     result = await search_lovgivning(limit=3)
     mock_client.get.assert_called_once_with("/v1/lovgivning/", params={"limit": 3})
-    assert result == [{"id": 1}]
+    assert result == {"data": [{"id": 1}], "count": 1}
 
 
 async def test_search_lovgivning_default_limit(mock_client, mock_json_response):
@@ -93,7 +93,7 @@ async def test_get_lovgivning_at_date(mock_client, mock_json_response):
 # --- get_lovgivning_amendments ---
 
 async def test_get_lovgivning_amendments(mock_client, mock_json_response):
-    mock_json_response.json.return_value = [{"amendment_id": 42}]
+    mock_json_response.json.return_value = {"data": [{"amendment_id": 42}], "count": 1}
     result = await get_lovgivning_amendments(year=2024, number=616)
     mock_client.get.assert_called_once_with("/v1/lovgivning/2024/616/amendments")
-    assert result == [{"amendment_id": 42}]
+    assert result == {"data": [{"amendment_id": 42}], "count": 1}
