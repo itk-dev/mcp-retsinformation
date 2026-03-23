@@ -12,7 +12,7 @@ Use [uv](https://github.com/astral-sh/uv) for dependency management.
 
 ```bash
 # Install dependencies (creates .venv)
-uv sync --extra dev
+uv sync --extra dev 
 
 # Run the MCP server (stdio transport, for local development)
 python -m mcp_retsinformation

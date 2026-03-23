@@ -1,0 +1,47 @@
+version: '3'
+
+dotenv:
+  - .env
+
+vars:
+  COMPOSE: docker compose
+  IMAGE_NAME: mcp-retsinformation
+
+tasks:
+  install:
+    desc: Install dependencies incl. dev extras
+    cmds:
+      - "{{.COMPOSE}} run --rm app-dev uv sync --extra dev"
+
+  run:
+    desc: Run the MCP server (stdio transport)
+    cmds:
+      - "{{.COMPOSE}} run --rm app-dev python -m mcp_retsinformation"
+
+  test:
+    desc: Run all tests
+    cmds:
+      - "{{.COMPOSE}} run --rm app-dev uv run pytest"
+
+  test:file:
+    desc: "Run a single test file — usage: task test:file FILE=tests/test_search.py"
+    cmds:
+      - "{{.COMPOSE}} run --rm app-dev uv run pytest {{.FILE}}"
+    requires:
+      vars:
+        - FILE
+
+  dev:
+    desc: Build and start the dev container (source mounted for live reload)
+    cmds:
+      - "{{.COMPOSE}} up app-dev --build"
+
+  prod:
+    desc: Build and start the production container
+    cmds:
+      - "{{.COMPOSE}} up app-prod --build"
+
+  down:
+    desc: Stop and remove containers
+    cmds:
+      - "{{.COMPOSE}} down"

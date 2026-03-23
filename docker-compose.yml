@@ -5,7 +5,7 @@ services:
       - "8000"
     environment:
       - TZ=Europe/Copenhagen
-      - RETSINFORMATION_BASE_URL=${RETSINFORMATION_BASE_URL:-https://api.retsinformation.dk}
+      - RETSINFORMATION_BASE_URL=${RETSINFORMATION_BASE_URL:-https://retsinformation-api.dk}
     profiles:
       - base-only
 
