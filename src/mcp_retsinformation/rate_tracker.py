@@ -4,7 +4,11 @@ from dataclasses import dataclass, field
 
 @dataclass
 class RateTracker:
-    """Tracks API request counts against retsinformation-api.dk rate limits (20/hour, 50/day)."""
+    """Tracks API request counts against retsinformation-api.dk rate limits (20/hour, 50/day).
+
+    Counts are stored in-memory and reset on container restart.
+    For persistence across restarts, mount a volume and store timestamps to a file.
+    """
 
     max_per_hour: int = 20
     max_per_day: int = 50
