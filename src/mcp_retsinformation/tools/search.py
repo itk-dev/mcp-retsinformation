@@ -2,6 +2,7 @@ import httpx
 from loguru import logger
 
 from ..config import settings
+from ..rate_tracker import tracker
 from ..server import mcp
 
 
@@ -24,6 +25,7 @@ async def search_lovgivning(
 
     async with httpx.AsyncClient(base_url=settings.retsinformation_base_url) as client:
         logger.debug("Searching lovgivning: search={!r} limit={}", search, limit)
+        tracker.record()
         response = await client.get("/v1/lovgivning/", params=params)
         response.raise_for_status()
         return response.json()
@@ -39,6 +41,7 @@ async def get_lovgivning(year: int, number: int) -> dict:
     """
     async with httpx.AsyncClient(base_url=settings.retsinformation_base_url) as client:
         logger.debug("Fetching lovgivning: {}/{}", year, number)
+        tracker.record()
         response = await client.get(f"/v1/lovgivning/{year}/{number}")
         response.raise_for_status()
         return response.json()
@@ -67,6 +70,7 @@ async def get_lovgivning_markdown(
 
     async with httpx.AsyncClient(base_url=settings.retsinformation_base_url) as client:
         logger.debug("Fetching markdown: {}/{}", year, number)
+        tracker.record()
         response = await client.get(f"/v1/lovgivning/{year}/{number}/markdown", params=params)
         response.raise_for_status()
         return response.text
@@ -83,6 +87,7 @@ async def get_lovgivning_at_date(year: int, number: int, date: str) -> dict:
     """
     async with httpx.AsyncClient(base_url=settings.retsinformation_base_url) as client:
         logger.debug("Fetching lovgivning {}/{} at {}", year, number, date)
+        tracker.record()
         response = await client.get(f"/v1/lovgivning/{year}/{number}/versions/at/{date}")
         response.raise_for_status()
         return response.json()
@@ -100,6 +105,16 @@ async def get_lovgivning_amendments(year: int, number: int) -> dict:
     """
     async with httpx.AsyncClient(base_url=settings.retsinformation_base_url) as client:
         logger.debug("Fetching amendments: {}/{}", year, number)
+        tracker.record()
         response = await client.get(f"/v1/lovgivning/{year}/{number}/amendments")
         response.raise_for_status()
         return response.json()
+
+
+@mcp.tool()
+async def get_rate_limit_status() -> dict:
+    """Check the current API rate limit usage. Call this before making requests to avoid 429 errors.
+
+    The retsinformation API allows 20 requests/hour and 50 requests/day.
+    """
+    return tracker.status()
