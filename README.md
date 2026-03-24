@@ -27,6 +27,7 @@ This builds the image and starts the dev container with the source directory mou
 | `get_lovgivning_markdown` | Fetch a law as Markdown, with optional section filtering | no filters, with `exclude`, with `paragraphs` |
 | `get_lovgivning_at_date` | Retrieve a law exactly as it appeared on a specific date | correct URL with date |
 | `get_lovgivning_amendments` | List all amendments made to a law | correct URL and return value |
+| `get_rate_limit_status` | Check API rate limit usage (20/hour, 50/day) | — |
 
 ## Testing
 
@@ -53,6 +54,16 @@ task dev          Build and start the dev container
 task prod         Build and start the production container
 task down         Stop and remove containers
 ```
+
+## Rate limiting
+
+The API allows 20 requests/hour and 50 requests/day. The server includes a `get_rate_limit_status` tool that tracks usage in-memory (resets on container restart).
+
+To ensure the LLM checks rate limits before each request, add the following to your client's system prompt:
+
+> Before using this retsinformation MCP tool always inform the user that you are using it to find retsinformation. Always call get_rate_limit_status first and display the result. If remaining_hour or remaining_day is 0, inform the user that the rate limit has been reached instead of making the request.
+
+Server-level MCP `instructions` can also be set in `server.py`, but not all clients surface them to the LLM.
 
 ## Configuration
 
