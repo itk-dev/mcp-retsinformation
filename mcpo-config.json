@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "retsinformation": {
-      "type": "streamable-http",
-      "url": "http://mcp-retsinformation:8000/mcp"
-    }
-  }
-}
